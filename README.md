@@ -30,12 +30,12 @@ Or install it yourself as:
       end
      
       modernize '1.2.3' do
-        delete 'hello'
+        remove 'hello'
         compute('foo') {|x| "baz-#{x}" }
       end
      
       last do
-        delete 'foo'
+        remove 'foo'
       end
      
     end
