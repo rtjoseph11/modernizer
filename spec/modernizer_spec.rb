@@ -94,7 +94,7 @@ describe 'Modernize' do
     end
   end
 
-  context 'first methods' do
+  context 'last methods' do
     before do
       @m = Modernize::Modernizer.new do
         request_version { @env['version'] }
@@ -107,6 +107,29 @@ describe 'Modernize' do
           add('foo'){'bar'}
 
           compute('fizz'){|value| "thing-#{value}"}
+        end
+      end
+    end
+
+    it "should remove foo from the body" do
+      result = @m.translate({'version' => '0.0.1'}, {foo: 'thing', 'fizz' => 'buzz'})
+      result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+    end
+  end
+
+  context 'version sorting' do
+    before do
+      @m = Modernize::Modernizer.new do
+        request_version { @env['version'] }
+
+        modernize '0.0.2' do
+          add('foo'){'bar'}
+
+          compute('fizz'){|value| "thing-#{value}"}
+        end
+
+        modernize '0.0.1' do
+          remove :foo
         end
       end
     end

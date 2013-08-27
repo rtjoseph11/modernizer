@@ -17,11 +17,12 @@ module Modernize
         map.send(translation[:name], req, translation[:field], translation[:block])
       end
 
-      # TODO: sort versions
       request_version = req.instance_exec &@migrations.version
       firsts = @migrations.translations.delete(:first) if @migrations.translations[:first]
       lasts = @migrations.translations.delete(:last) if @migrations.translations[:last]
-      migration_versions = @migrations.translations.keys
+      migration_versions = @migrations.translations.keys.sort! do |x,y|
+        Gem::Version.new(x) <=> Gem::Version.new(y)
+      end
       
       firsts.each &translate if firsts
 
@@ -32,7 +33,7 @@ module Modernize
       end
 
       lasts.each &translate if lasts
-      
+
       body
     end
   end
