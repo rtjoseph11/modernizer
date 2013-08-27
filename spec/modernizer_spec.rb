@@ -8,7 +8,7 @@ describe 'Modernize' do
   context 'add a field' do
     before do
       @m = Modernize::Modernizer.new do
-        request_version {|env| env['version'] }
+        request_version { @env['version'] }
         
         modernize '0.0.1' do
           add(:foo){ 'bar' }
@@ -25,7 +25,7 @@ describe 'Modernize' do
   context 'remove a field' do
     before do
       @m = Modernize::Modernizer.new do
-        request_version {|env| env['version'] }
+        request_version { @env['version'] }
         
         modernize '0.0.1' do
           remove :foo
@@ -42,14 +42,14 @@ describe 'Modernize' do
   context 'compute a field' do
     before do
       @m = Modernize::Modernizer.new do
-        request_version {|env| env['version'] }
+        request_version { @env['version'] }
         
         modernize '0.0.1' do
-          compute(:retina) do |env, body|
-            if body['device-type'] == 'android'
+          compute(:retina) do |value|
+            if @body['device-type'] == 'android'
               false
             else
-              case body['retina']
+              case value
               when 1 then true
               when 0 then false
               else false
@@ -68,6 +68,52 @@ describe 'Modernize' do
     it "should convert numbers to booleans" do
       result = @m.translate({'version' => '0.0.1'}, {foo: 'bar', 'device-type' => 'iOS', 'retina' => 1})
       result.should == {:foo => 'bar', 'device-type' => 'iOS', 'retina' => true}
+    end
+  end
+
+  context 'first methods' do
+    before do
+      @m = Modernize::Modernizer.new do
+        request_version { @env['version'] }
+        
+        first do
+          add('foo'){'bar'}
+
+          compute('fizz'){|value| "thing-#{value}"}
+        end
+
+        modernize '0.0.1' do
+          remove :foo
+        end
+      end
+    end
+
+    it "should remove foo from the body" do
+      result = @m.translate({'version' => '0.0.1'}, {baz: 'thing', 'fizz' => 'buzz'})
+      result.should == {baz: 'thing', 'fizz' => 'thing-buzz'}
+    end
+  end
+
+  context 'first methods' do
+    before do
+      @m = Modernize::Modernizer.new do
+        request_version { @env['version'] }
+
+        modernize '0.0.1' do
+          remove :foo
+        end
+
+        last do
+          add('foo'){'bar'}
+
+          compute('fizz'){|value| "thing-#{value}"}
+        end
+      end
+    end
+
+    it "should remove foo from the body" do
+      result = @m.translate({'version' => '0.0.1'}, {foo: 'thing', 'fizz' => 'buzz'})
+      result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
   end
 end

@@ -1,15 +1,15 @@
 module Modernize
   class MapMethods
-    def add(env, obj, field, block)
-      obj[field.to_s] = block.call
+    def add(request, field, block)
+      request.body[field.to_s] = request.instance_exec &block if request.body[field.to_s].nil?
     end
 
-    def remove(env, obj, field, block)
-      obj.delete(field.to_s) || obj.delete(field.to_sym)
+    def remove(request, field, block)
+      request.body.delete(field.to_s) || request.body.delete(field.to_sym)
     end
 
-    def compute(env, obj, field, block)
-      obj[field.to_s] = block.call(env, obj)
+    def compute(request, field, block)
+      request.body[field.to_s] = request.instance_exec request.body[field.to_s], &block
     end
   end
 end
