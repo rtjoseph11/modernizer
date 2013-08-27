@@ -18,28 +18,27 @@ Or install it yourself as:
 
 ## Usage
 
-Modernizer.new do
+    Modernizer.new do
+      request_version { @env[...] }
  
-  request_version { @env[...] }
- 
-  first do
-    add 'hello' { 'hardcoded' }
-  end
- 
-  modernize '1.2.1' do
-    add 'foo' { "#{@body['hello']}-bar" }
-  end
- 
-  modernize '1.2.3' do
-    delete 'hello'
-    map 'foo' {|x| "baz-#{x}" }
-  end
- 
-  last do
-    delete 'foo'
-  end
- 
-end
+      first do
+        add 'hello' { 'hardcoded' }
+      end
+     
+      modernize '1.2.1' do
+        add 'foo' { "#{@body['hello']}-bar" }
+      end
+     
+      modernize '1.2.3' do
+        delete 'hello'
+        map 'foo' {|x| "baz-#{x}" }
+      end
+     
+      last do
+        delete 'foo'
+      end
+     
+    end
 
 ## Contributing
 
