@@ -1,8 +1,8 @@
-require "modernizer/version"
-require "modernizer/map_methods"
-require "modernizer/meta_methods"
-require "modernizer/version_parser"
-require "modernizer/parser"
+require 'modernizer/version'
+require 'modernizer/map_methods'
+require 'modernizer/meta_methods'
+require 'modernizer/version_parser'
+require 'modernizer/parser'
 
 module Modernize
   class Modernizer
@@ -13,26 +13,26 @@ module Modernize
     def translate(env, body)
       req = RequestContext.new(env, body)
       map = MapMethods.new
-      translate = Proc.new do |translation|
+      translate = lambda { |translation|
         map.send(translation[:name], req, translation[:field], translation[:block])
-      end
+      }
 
-      request_version = req.instance_exec &@migrations.version
-      firsts = @migrations.translations.delete(:first) if @migrations.translations[:first]
-      lasts = @migrations.translations.delete(:last) if @migrations.translations[:last]
+      request_version = req.instance_exec(&@migrations.version)
+      firsts = @migrations.translations.delete(:first)
+      lasts = @migrations.translations.delete(:last)
       migration_versions = @migrations.translations.keys.sort! do |x,y|
         Gem::Version.new(x) <=> Gem::Version.new(y)
       end
       
-      firsts.each &translate if firsts
+      firsts.each(&translate) if firsts
 
       first_index = migration_versions.find_index(request_version)
       migration_versions.each_with_index do |version, index|
         next unless index >= first_index
-        @migrations.translations[version].each &translate
+        @migrations.translations[version].each(&translate)
       end
 
-      lasts.each &translate if lasts
+      lasts.each(&translate) if lasts
 
       body
     end

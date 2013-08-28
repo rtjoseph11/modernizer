@@ -7,11 +7,11 @@ require 'modernizer'
 describe 'Modernize' do
   context 'add a field' do
     before do
-      @m = Modernize::Modernizer.new do
+      @m = Modernize::Modernizer.new do |env, body|
         request_version { @env['version'] }
         
         modernize '0.0.1' do
-          add(:foo){ 'bar' }
+          add('foo'){ 'bar' }
         end
       end
     end
@@ -28,13 +28,13 @@ describe 'Modernize' do
         request_version { @env['version'] }
         
         modernize '0.0.1' do
-          remove :foo
+          remove 'foo'
         end
       end
     end
 
     it "should remove foo from the body" do
-      result = @m.translate({'version' => '0.0.1'}, {foo: 'bar', 'fizz' => 'buzz'})
+      result = @m.translate({'version' => '0.0.1'}, {'foo' => 'bar', 'fizz' => 'buzz'})
       result.should == {'fizz' => 'buzz'}
     end
   end
@@ -45,7 +45,7 @@ describe 'Modernize' do
         request_version { @env['version'] }
         
         modernize '0.0.1' do
-          compute(:retina) do |value|
+          compute('retina') do |value|
             if @body['device-type'] == 'android'
               false
             else
@@ -61,13 +61,13 @@ describe 'Modernize' do
     end
 
     it "should set retina to false for android" do
-      result = @m.translate({'version' => '0.0.1'}, {foo: 'bar', 'device-type' => 'android'})
-      result.should == {:foo => 'bar', 'device-type' => 'android', 'retina' => false}
+      result = @m.translate({'version' => '0.0.1'}, {'foo' => 'bar', 'device-type' => 'android'})
+      result.should == {'foo' => 'bar', 'device-type' => 'android', 'retina' => false}
     end
 
     it "should convert numbers to booleans" do
-      result = @m.translate({'version' => '0.0.1'}, {foo: 'bar', 'device-type' => 'iOS', 'retina' => 1})
-      result.should == {:foo => 'bar', 'device-type' => 'iOS', 'retina' => true}
+      result = @m.translate({'version' => '0.0.1'}, {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => 1})
+      result.should == {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => true}
     end
   end
 
@@ -83,14 +83,14 @@ describe 'Modernize' do
         end
 
         modernize '0.0.1' do
-          remove :foo
+          remove 'foo'
         end
       end
     end
 
     it "should remove foo from the body" do
-      result = @m.translate({'version' => '0.0.1'}, {baz: 'thing', 'fizz' => 'buzz'})
-      result.should == {baz: 'thing', 'fizz' => 'thing-buzz'}
+      result = @m.translate({'version' => '0.0.1'}, {'baz' => 'thing', 'fizz' => 'buzz'})
+      result.should == {'baz' => 'thing', 'fizz' => 'thing-buzz'}
     end
   end
 
@@ -100,7 +100,7 @@ describe 'Modernize' do
         request_version { @env['version'] }
 
         modernize '0.0.1' do
-          remove :foo
+          remove 'foo'
         end
 
         last do
@@ -112,7 +112,7 @@ describe 'Modernize' do
     end
 
     it "should remove foo from the body" do
-      result = @m.translate({'version' => '0.0.1'}, {foo: 'thing', 'fizz' => 'buzz'})
+      result = @m.translate({'version' => '0.0.1'}, {'foo' => 'thing', 'fizz' => 'buzz'})
       result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
   end
@@ -120,8 +120,6 @@ describe 'Modernize' do
   context 'version sorting' do
     before do
       @m = Modernize::Modernizer.new do
-        request_version { @env['version'] }
-
         modernize '0.0.2' do
           add('foo'){'bar'}
 
@@ -129,13 +127,15 @@ describe 'Modernize' do
         end
 
         modernize '0.0.1' do
-          remove :foo
+          remove 'foo'
         end
+
+        request_version { @env['version'] }
       end
     end
 
     it "should remove foo from the body" do
-      result = @m.translate({'version' => '0.0.1'}, {foo: 'thing', 'fizz' => 'buzz'})
+      result = @m.translate({'version' => '0.0.1'}, {'foo' => 'thing', 'fizz' => 'buzz'})
       result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
   end

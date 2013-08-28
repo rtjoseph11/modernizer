@@ -17,29 +17,28 @@ Or install it yourself as:
     $ gem install modernizer
 
 ## Usage
+```ruby
+  Modernizer.new do
+    request_version { @env[...] }
 
-    Modernizer.new do
-      request_version { @env[...] }
- 
-      first do
-        add('hello') { 'hardcoded' }
-      end
-     
-      modernize '1.2.1' do
-        add('foo') { "#{@body['hello']}-bar" }
-      end
-     
-      modernize '1.2.3' do
-        remove 'hello'
-        compute('foo') {|x| "baz-#{x}" }
-      end
-     
-      last do
-        remove 'foo'
-      end
-     
+    first do
+      add('hello') { 'hardcoded' }
     end
-
+   
+    modernize '1.2.1' do
+      add('foo') { "#{@body['hello']}-bar" }
+    end
+   
+    modernize '1.2.3' do
+      remove 'hello'
+      compute('foo') {|x| "baz-#{x}" }
+    end
+   
+    last do
+      remove 'foo'
+    end
+  end
+```
 ## Contributing
 
 1. Fork it
