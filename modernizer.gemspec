@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.name          = 'modernizer'
   spec.version       = Modernizer::VERSION
   spec.authors       = ['Tucker Joseph']
-  spec.email         = ['tucker@chartboost.com']
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.email         = ['rtjoseph11@gmail.com']
+  spec.description   = %q{convert hashes based on translations associated with versions}
+  spec.summary       = %q{see description}
   spec.homepage      = ''
   spec.license       = 'MIT'
 
