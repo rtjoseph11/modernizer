@@ -9,18 +9,17 @@ module Modernize
     def initialize(&block)
       @migrations = Parser.parse(&block)
       @variables = block.parameters.map {|value| value[1]}
-      @struct = StructContext.new(block.parameters.map {|value| value[1]})
+      @struct = StructContext.new(@variables)
     end
 
-    def translate(*params, hash)
+    def translate(*params)
       raise ArgumentError.new('did not provide expeceted params') if params.size != @variables.size
       @variables.map do |value|
         @struct.send((value.to_s + '=').to_sym, params.shift)
       end
-      @struct.hash = hash
       map = MapMethods.new
       translate = lambda { |translation|
-        map.send(translation[:name], @struct, translation[:field], translation[:block])
+        map.send(translation[:name], @struct, @variables.last, translation[:field], translation[:block])
       }
 
       struct_version = @struct.instance_exec(&@migrations.version)
@@ -40,13 +39,12 @@ module Modernize
 
       lasts.each(&translate) if lasts
 
-      hash
+      @struct.send(@variables.last)
     end
   end
 
   private
   class StructContext
-    attr_accessor :hash
     def initialize(params)
       params.each do |value|
         create_attr(value)

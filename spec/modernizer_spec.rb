@@ -7,7 +7,7 @@ require 'modernizer'
 describe 'Modernize' do
   context 'add a field' do
     before do
-      @m = Modernize::Modernizer.new do |env|
+      @m = Modernize::Modernizer.new do |env, body|
         version { @env['version'] }
         
         modernize '0.0.1' do
@@ -24,7 +24,7 @@ describe 'Modernize' do
 
   context 'remove a field' do
     before do
-      @m = Modernize::Modernizer.new do |env|
+      @m = Modernize::Modernizer.new do |env, body|
         version { @env['version'] }
         
         modernize '0.0.1' do
@@ -41,12 +41,12 @@ describe 'Modernize' do
 
   context 'compute a field' do
     before do
-      @m = Modernize::Modernizer.new do |env|
+      @m = Modernize::Modernizer.new do |env, body|
         version { @env['version'] }
         
         modernize '0.0.1' do
           compute('retina') do |value|
-            if @hash['device-type'] == 'android'
+            if @body['device-type'] == 'android'
               false
             else
               case value
@@ -73,7 +73,7 @@ describe 'Modernize' do
 
   context 'first methods' do
     before do
-      @m = Modernize::Modernizer.new do |env|
+      @m = Modernize::Modernizer.new do |env, body|
         version { @env['version'] }
         
         first do
@@ -96,7 +96,7 @@ describe 'Modernize' do
 
   context 'last methods' do
     before do
-      @m = Modernize::Modernizer.new do |env|
+      @m = Modernize::Modernizer.new do |env, body|
         version { @env['version'] }
 
         modernize '0.0.1' do
@@ -119,7 +119,7 @@ describe 'Modernize' do
 
   context 'version sorting' do
     before do
-      @m = Modernize::Modernizer.new do |env|
+      @m = Modernize::Modernizer.new do |env, body|
         modernize '0.0.2' do
           add('foo'){'bar'}
 
