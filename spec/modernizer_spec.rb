@@ -7,8 +7,8 @@ require 'modernizer'
 describe 'Modernize' do
   context 'add a field' do
     before do
-      @m = Modernize::Modernizer.new do |env, body|
-        request_version { @env['version'] }
+      @m = Modernize::Modernizer.new do |env|
+        version { @env['version'] }
         
         modernize '0.0.1' do
           add('foo'){ 'bar' }
@@ -24,8 +24,8 @@ describe 'Modernize' do
 
   context 'remove a field' do
     before do
-      @m = Modernize::Modernizer.new do
-        request_version { @env['version'] }
+      @m = Modernize::Modernizer.new do |env|
+        version { @env['version'] }
         
         modernize '0.0.1' do
           remove 'foo'
@@ -41,12 +41,12 @@ describe 'Modernize' do
 
   context 'compute a field' do
     before do
-      @m = Modernize::Modernizer.new do
-        request_version { @env['version'] }
+      @m = Modernize::Modernizer.new do |env|
+        version { @env['version'] }
         
         modernize '0.0.1' do
           compute('retina') do |value|
-            if @body['device-type'] == 'android'
+            if @hash['device-type'] == 'android'
               false
             else
               case value
@@ -73,8 +73,8 @@ describe 'Modernize' do
 
   context 'first methods' do
     before do
-      @m = Modernize::Modernizer.new do
-        request_version { @env['version'] }
+      @m = Modernize::Modernizer.new do |env|
+        version { @env['version'] }
         
         first do
           add('foo'){'bar'}
@@ -96,8 +96,8 @@ describe 'Modernize' do
 
   context 'last methods' do
     before do
-      @m = Modernize::Modernizer.new do
-        request_version { @env['version'] }
+      @m = Modernize::Modernizer.new do |env|
+        version { @env['version'] }
 
         modernize '0.0.1' do
           remove 'foo'
@@ -119,7 +119,7 @@ describe 'Modernize' do
 
   context 'version sorting' do
     before do
-      @m = Modernize::Modernizer.new do
+      @m = Modernize::Modernizer.new do |env|
         modernize '0.0.2' do
           add('foo'){'bar'}
 
@@ -130,7 +130,7 @@ describe 'Modernize' do
           remove 'foo'
         end
 
-        request_version { @env['version'] }
+        version { @env['version'] }
       end
     end
 

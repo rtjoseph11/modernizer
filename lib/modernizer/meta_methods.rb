@@ -5,10 +5,10 @@ module Modernize
       parser.translations[args[0]] = VersionParser.parse(&block)
     end
 
-    def request_version(parser, args, &block)
+    def version(parser, args, &block)
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 0)") if args.size != 0
       parser.has_version = true
-      parser.version = block
+      parser.initial_version = block
     end
 
     def first(parser, args, &block)
