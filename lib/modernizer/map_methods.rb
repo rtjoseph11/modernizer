@@ -1,7 +1,8 @@
 module Modernize
   class MapMethods
     def add(struct, hash, field, block)
-      struct.send(hash)[field] = struct.instance_exec(&block) if struct.send(hash)[field].nil?
+      h = struct.send(hash)
+      h[field] = struct.instance_exec(&block) if h[field].nil?
     end
 
     def remove(struct, hash, field, block)
@@ -9,7 +10,8 @@ module Modernize
     end
 
     def compute(struct, hash, field, block)
-      struct.send(hash)[field] = struct.instance_exec(struct.send(hash)[field], &block)
+      h = struct.send(hash)
+      h[field] = struct.instance_exec(h[field], &block)
     end
   end
 end

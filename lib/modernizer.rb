@@ -13,13 +13,13 @@ module Modernize
     end
 
     def translate(*params)
-      raise ArgumentError.new('did not provide expeceted params') if params.size != @variables.size
+      raise ArgumentError.new if params.size != @variables.size
       @variables.map do |value|
         @struct.send((value.to_s + '=').to_sym, params.shift)
       end
       map = MapMethods.new
-      translate = lambda { |translation|
-        map.send(translation[:name], @struct, @variables.last, translation[:field], translation[:block])
+      translate = lambda { |t|
+        map.send(t[:name], @struct, @variables.last, t[:field], t[:block])
       }
 
       struct_version = @struct.instance_exec(&@migrations.version)
