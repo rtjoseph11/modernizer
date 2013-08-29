@@ -37,7 +37,7 @@ module Modernize
     # throws an error if no block is provided for determining version
     #
     def migrations
-      raise VersionError.new("did not provide a way to determine version") unless @has_version
+      raise VersionError.new('did not provide a way to determine version') unless @has_version
       CompiledMigrations.new(@translations, @initial_version)
     end
   end

@@ -33,7 +33,7 @@ describe 'Modernize' do
       end
     end
 
-    it "should remove foo from the body" do
+    it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'fizz' => 'buzz'})
       result.should == {'fizz' => 'buzz'}
     end
@@ -60,12 +60,12 @@ describe 'Modernize' do
       end
     end
 
-    it "should set retina to false for android" do
+    it 'should set retina to false for android' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'device-type' => 'android'})
       result.should == {'foo' => 'bar', 'device-type' => 'android', 'retina' => false}
     end
 
-    it "should convert numbers to booleans" do
+    it 'should convert numbers to booleans' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => 1})
       result.should == {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => true}
     end
@@ -88,7 +88,7 @@ describe 'Modernize' do
       end
     end
 
-    it "should remove foo from the body" do
+    it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'baz' => 'thing', 'fizz' => 'buzz'})
       result.should == {'baz' => 'thing', 'fizz' => 'thing-buzz'}
     end
@@ -111,7 +111,7 @@ describe 'Modernize' do
       end
     end
 
-    it "should remove foo from the body" do
+    it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'thing', 'fizz' => 'buzz'})
       result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
@@ -123,7 +123,7 @@ describe 'Modernize' do
         modernize '0.0.2' do
           add('foo'){'bar'}
 
-          compute('fizz'){|value| "thing-#{value}"}
+          compute('fizz'){|value| 'thing-#{value}'}
         end
 
         modernize '0.0.1' do
@@ -134,7 +134,7 @@ describe 'Modernize' do
       end
     end
 
-    it "should remove foo from the body" do
+    it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'thing', 'fizz' => 'buzz'})
       result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
