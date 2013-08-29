@@ -123,7 +123,7 @@ describe 'Modernize' do
         modernize '0.0.2' do
           add('foo'){'bar'}
 
-          compute('fizz'){|value| 'thing-#{value}'}
+          compute('fizz'){|value| "thing-#{value}"}
         end
 
         modernize '0.0.1' do
