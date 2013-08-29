@@ -19,7 +19,7 @@ module Modernize
     #
     def compute(struct, field, block)
       h = struct.hash
-      h[field] = struct.instance_exec(h[field], &block)
+      h[field] = struct.instance_exec(h[field], &block) unless h[field].nil?
     end
   end
 end
