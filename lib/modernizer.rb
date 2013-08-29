@@ -6,60 +6,96 @@ require 'modernizer/parser'
 
 module Modernize
   class Modernizer
+
+    # generates the set of migrations by parsing the passed in block
+    #
     def initialize(&block)
       @migrations = Parser.parse(&block)
-      @variables = block.parameters.map {|value| value[1]}
-      @struct = StructContext.new(@variables)
     end
 
-    def translate(*params)
-      raise ArgumentError.new if params.size != @variables.size
-      @variables.map do |value|
-        @struct.send((value.to_s + '=').to_sym, params.shift)
-      end
+    # translates a hash based on defined migrations
+    # with a given context and returns the hash
+    # this will modify whatever gets passed in
+    #
+    def translate(context, hash)
+      # makes sure that the context is a hash
+      raise ArgumentError.new('did not pass a hash for the context') unless context.is_a?(Hash)
+      
+      # create the context instance for instance variables
+      struct = StructContext.new(context, hash)
+      
+      # instantiate MapMethods to perform translations and define lambda
+      # for how to tranlate a field
+      #
       map = MapMethods.new
       translate = lambda { |t|
-        map.send(t[:name], @struct, @variables.last, t[:field], t[:block])
+        map.send(t[:name], struct, t[:field], t[:block])
       }
 
-      struct_version = @struct.instance_exec(&@migrations.version)
+      # determine the version of the incoming hash
+      #
+      struct_version = struct.instance_exec(&@migrations.version)
+
+      # get the first and last translations
+      #
       firsts = @migrations.translations.delete(:first)
       lasts = @migrations.translations.delete(:last)
+
+      # gets a list of the potential versions and then sorts them
+      #
       migration_versions = @migrations.translations.keys.sort! do |x,y|
         Gem::Version.new(x) <=> Gem::Version.new(y)
       end
       
+      # run the first translations if they exist
+      #
       firsts.each(&translate) if firsts
 
+      # determine the first version to run translations
+      #
       first_index = migration_versions.find_index(struct_version)
+
+      # run all subsequent version translations
+      #
       migration_versions.each_with_index do |version, index|
         next unless index >= first_index
         @migrations.translations[version].each(&translate)
       end
 
+      # run the first translations if they exist
+      #
       lasts.each(&translate) if lasts
 
-      @struct.send(@variables.last)
+      # return hash
+      #
+      struct.hash
     end
   end
 
   private
+
+  # this class is used to make the context key/values available
+  # as instance variables to the map methods
+  #
   class StructContext
-    def initialize(params)
-      params.each do |value|
-        create_attr(value)
+    def initialize(context, hash)
+      create_getter(:hash, hash)
+      context.each do |key, value|
+        create_getter(key, value)
       end
     end
 
+    # helper method which wraps define_method
+    #
     def create_method(name, &block)
       self.class.send(:define_method, name, &block)
     end
 
-    def create_attr(name)
-      create_method("#{name}=".to_sym) do |val|
-        instance_variable_set(:"@#{name}", val)
-      end
-
+    # creates getters for each instance variable and sets
+    # the initial value
+    #
+    def create_getter(name, value)
+      instance_variable_set(:"@#{name}", value)
       create_method(name.to_sym) do
         instance_variable_get(:"@#{name}")
       end
