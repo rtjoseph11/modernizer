@@ -30,5 +30,21 @@ module Modernize
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 0)") if args.size != 0
       parser.translations[:last] = VersionParser.parse(&block)
     end
+
+    # sets the order of translations to be ascending i.e.
+    # first do version 0.0.1 then version 0.0.2 etc
+    #
+    def ascending(parser, args, &block)
+      raise ArgumentError.new("wrong number of arguments (#{args.size} for 0)") if args.size != 0
+      parser.order = :ascending
+    end
+    
+    # set the order of translations to be descending i.e.
+    # first do version 0.0.9 then version 0.0.8 etc
+    #
+    def descending(parser, args, &block)
+      raise ArgumentError.new("wrong number of arguments (#{args.size} for 0)") if args.size != 0
+      parser.order = :descending
+    end
   end
 end

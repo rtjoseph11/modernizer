@@ -14,12 +14,20 @@ module Modernize
       struct.hash.delete(field)
     end
 
-    # computes an existing field passing the current value
+    # maps an existing field passing the current value
+    # as a parameter to the block
+    #
+    def map(struct, field, block)
+      h = struct.hash
+      h[field] = struct.instance_exec(h[field], &block) unless h[field].nil?
+    end
+
+    # adds or updates a field passing the current value (if any)
     # as a parameter to the block
     #
     def compute(struct, field, block)
       h = struct.hash
-      h[field] = struct.instance_exec(h[field], &block) unless h[field].nil?
+      h[field] = struct.instance_exec(h[field], &block)
     end
   end
 end

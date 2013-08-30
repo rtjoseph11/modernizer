@@ -46,7 +46,10 @@ module Modernize
       migration_versions = @migrations.translations.keys.sort! do |x,y|
         Gem::Version.new(x) <=> Gem::Version.new(y)
       end
-      
+
+      # reverse order if descending was specified
+      #
+      migration_versions = @migrations.order == :descending ? migration_versions.reverse : migration_versions
       # run the first translations if they exist
       #
       firsts.each(&translate) if firsts

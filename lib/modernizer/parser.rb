@@ -11,19 +11,20 @@ module Modernize
 
   # struct for storing the translations and block for determining version
   #
-  class CompiledMigrations < Struct.new(:translations, :version); end
+  class CompiledMigrations < Struct.new(:translations, :version, :order); end
 
   class VersionError < StandardError; end
 
   # class for the context in which the block will get run
   #
   class BlockParsingContenxt
-    attr_accessor :translations, :initial_version, :has_version
+    attr_accessor :translations, :initial_version, :has_version, :order
 
     def initialize
       @translations = {}
       @initial_version = nil
       @has_version = false
+      @order = :ascending
     end
 
     # determines what versions there are and before + after if any
@@ -38,7 +39,7 @@ module Modernize
     #
     def migrations
       raise VersionError.new('did not provide a way to determine version') unless @has_version
-      CompiledMigrations.new(@translations, @initial_version)
+      CompiledMigrations.new(@translations, @initial_version, @order)
     end
   end
 end
