@@ -36,6 +36,8 @@ module Modernize
       #
       struct_version = struct.instance_exec(&@migrations.version)
 
+      raise StandardError.new('calculated version is not valid') unless Gem::Version.correct?(struct_version)
+
       # get the first and last translations
       #
       firsts = @migrations.translations.delete(:first)

@@ -6,6 +6,7 @@ module Modernize
     #
     def modernize(parser, args, &block)
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 1)") if args.size != 1
+      raise StandardError.new('calculated version is not valid') unless Gem::Version.correct?(args[0])
       parser.translations[args[0]] = VersionParser.parse(&block)
     end
 
@@ -38,7 +39,7 @@ module Modernize
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 0)") if args.size != 0
       parser.order = :ascending
     end
-    
+
     # set the order of translations to be descending i.e.
     # first do version 0.0.9 then version 0.0.8 etc
     #
