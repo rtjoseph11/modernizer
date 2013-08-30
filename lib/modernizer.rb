@@ -58,12 +58,14 @@ module Modernize
 
       # determine the first version to run translations
       #
-      first_index = migration_versions.find_index(struct_version)
+      first_index = @migrations.order == :ascending ? migration_versions.find_index(struct_version) : nil
+      last_index = @migrations.order == :descending ? migration_versions.find_index(struct_version) : nil 
 
       # run all subsequent version translations
       #
       migration_versions.each_with_index do |version, index|
-        next unless index >= first_index
+        next unless !first_index || index >= first_index
+        next unless !last_index || index <= last_index
         @migrations.translations[version].each(&translate)
       end
 
