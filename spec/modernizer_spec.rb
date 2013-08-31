@@ -1,11 +1,9 @@
-require 'rspec'
-
-$: << File.dirname(__FILE__) + '/../lib'
-
-require 'modernizer'
+require File.expand_path('../../lib/modernizer.rb', __FILE__)
+require 'minitest/autorun'
+require 'mocha/setup'
 
 describe 'Modernize' do
-  context 'add a field' do
+  describe 'add a field' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
@@ -18,11 +16,11 @@ describe 'Modernize' do
 
     it 'should add foo to the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {})
-      result.should == {'foo' => 'bar'}
+      assert_equal result, {'foo' => 'bar'}
     end
   end
 
-  context 'remove a field' do
+  describe 'remove a field' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
@@ -35,11 +33,11 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'fizz' => 'buzz'})
-      result.should == {'fizz' => 'buzz'}
+      assert_equal result, {'fizz' => 'buzz'}
     end
   end
 
-  context 'compute a field' do
+  describe 'compute a field' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
@@ -62,16 +60,16 @@ describe 'Modernize' do
 
     it 'should set retina to false for android' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'device-type' => 'android'})
-      result.should == {'foo' => 'bar', 'device-type' => 'android', 'retina' => false}
+      assert_equal result, {'foo' => 'bar', 'device-type' => 'android', 'retina' => false}
     end
 
     it 'should convert numbers to booleans' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => 1})
-      result.should == {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => true}
+      assert_equal result, {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => true}
     end
   end
 
-  context 'first methods' do
+  describe 'first methods' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
@@ -90,11 +88,11 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'baz' => 'thing', 'fizz' => 'buzz'})
-      result.should == {'baz' => 'thing', 'fizz' => 'thing-buzz'}
+      assert_equal result, {'baz' => 'thing', 'fizz' => 'thing-buzz'}
     end
   end
 
-  context 'last methods' do
+  describe 'last methods' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
@@ -113,11 +111,11 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'thing', 'fizz' => 'buzz'})
-      result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+      assert_equal result, {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
   end
 
-  context 'version sorting' do
+  describe 'version sorting' do
     before do
       @m = Modernize::Modernizer.new do
         modernize '0.0.2' do
@@ -136,7 +134,7 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'thing', 'fizz' => 'buzz'})
-      result.should == {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+      assert_equal result, {'foo' => 'bar', 'fizz' => 'thing-buzz'}
     end
   end
 end
