@@ -7,7 +7,7 @@ describe 'Modernize' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
-        
+
         modernize '0.0.1' do
           add('foo'){ 'bar' }
         end
@@ -16,7 +16,8 @@ describe 'Modernize' do
 
     it 'should add foo to the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {})
-      assert_equal result, {'foo' => 'bar'}
+      expected = {'foo' => 'bar'}
+      assert_equal expected, result
     end
   end
 
@@ -24,7 +25,7 @@ describe 'Modernize' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
-        
+
         modernize '0.0.1' do
           remove 'foo'
         end
@@ -33,7 +34,8 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'fizz' => 'buzz'})
-      assert_equal result, {'fizz' => 'buzz'}
+      expected = {'fizz' => 'buzz'}
+      assert_equal expected, result
     end
   end
 
@@ -41,7 +43,7 @@ describe 'Modernize' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
-        
+
         modernize '0.0.1' do
           compute('retina') do |value|
             if @hash['device-type'] == 'android'
@@ -60,12 +62,14 @@ describe 'Modernize' do
 
     it 'should set retina to false for android' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'device-type' => 'android'})
-      assert_equal result, {'foo' => 'bar', 'device-type' => 'android', 'retina' => false}
+      expected = {'foo' => 'bar', 'device-type' => 'android', 'retina' => false}
+      assert_equal expected, result
     end
 
     it 'should convert numbers to booleans' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => 1})
-      assert_equal result, {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => true}
+      expected = {'foo' => 'bar', 'device-type' => 'iOS', 'retina' => true}
+      assert_equal expected, result
     end
   end
 
@@ -73,7 +77,7 @@ describe 'Modernize' do
     before do
       @m = Modernize::Modernizer.new do
         version { @env['version'] }
-        
+
         first do
           add('foo'){'bar'}
 
@@ -88,7 +92,8 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'baz' => 'thing', 'fizz' => 'buzz'})
-      assert_equal result, {'baz' => 'thing', 'fizz' => 'thing-buzz'}
+      expected = {'baz' => 'thing', 'fizz' => 'thing-buzz'}
+      assert_equal expected, result
     end
   end
 
@@ -111,7 +116,8 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'thing', 'fizz' => 'buzz'})
-      assert_equal result, {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+      expected = {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+      assert_equal expected, result
     end
   end
 
@@ -134,7 +140,8 @@ describe 'Modernize' do
 
     it 'should remove foo from the body' do
       result = @m.translate({:env => {'version' => '0.0.1'}}, {'foo' => 'thing', 'fizz' => 'buzz'})
-      assert_equal result, {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+      expected = {'foo' => 'bar', 'fizz' => 'thing-buzz'}
+      assert_equal expected, result
     end
   end
 end
