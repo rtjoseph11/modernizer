@@ -20,7 +20,7 @@ module Modernize
     #
     def method_missing(method, *args, &block)
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 1)") if args.size != 1
-      raise NoMethodError.new("Undefined translation method #{method}") unless MapMethods.new.respond_to?(method)
+      raise NoMethodError.new("Undefined translation method #{method}") unless MapMethods.respond_to?(method)
       @maps << {name: method, field: args[0], block: block}
     end
 

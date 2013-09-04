@@ -30,8 +30,8 @@ module Modernize
     # determines what versions there are and before + after if any
     #
     def method_missing(method, *args, &block)
-      raise NoMethodError.new("Undefined translation method #{method}") unless MetaMethods.new.respond_to?(method)
-      MetaMethods.new.send(method, self, args, &block)
+      raise NoMethodError.new("Undefined translation method #{method}") unless MetaMethods.respond_to?(method)
+      MetaMethods.send(method, self, args, &block)
     end
 
     # returns the struct of version block and translation sets

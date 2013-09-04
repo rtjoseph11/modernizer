@@ -20,16 +20,16 @@ module Modernize
     def translate(context, hash)
       # makes sure that the context is a hash
       raise ArgumentError.new('did not pass a hash for the context') unless context.is_a?(Hash)
-      
+
       # create the context instance for instance variables
       struct = StructContext.new(context, hash)
-      
+
       # instantiate MapMethods to perform translations and define lambda
       # for how to tranlate a field
       #
-      map = MapMethods.new
+
       translate = lambda { |t|
-        map.send(t[:name], struct, t[:field], t[:block])
+        MapMethods.send(t[:name], struct, t[:field], t[:block])
       }
 
       # determine the version of the incoming hash
@@ -59,7 +59,7 @@ module Modernize
       # determine the first version to run translations
       #
       first_index = @migrations.order == :ascending ? migration_versions.find_index(struct_version) : nil
-      last_index = @migrations.order == :descending ? migration_versions.find_index(struct_version) : nil 
+      last_index = @migrations.order == :descending ? migration_versions.find_index(struct_version) : nil
 
       # run all subsequent version translations
       #
