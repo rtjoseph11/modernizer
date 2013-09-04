@@ -20,7 +20,7 @@ module Modernize
     def translate(context, hash)
       # makes sure that the context is a hash
       raise ArgumentError.new('did not pass a hash for the context') unless context.is_a?(Hash)
-
+      raise ArgumentError.new('cannot provide include hash in context') if context[:hash]
       # create the context instance for instance variables
       struct = StructContext.new(context, hash)
 

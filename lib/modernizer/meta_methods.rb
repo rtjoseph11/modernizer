@@ -7,7 +7,7 @@ module Modernize
       #
       def modernize(parser, args, &block)
         raise ArgumentError.new("wrong number of arguments (#{args.size} for 1)") if args.size != 1
-        raise StandardError.new('calculated version is not valid') unless Gem::Version.correct?(args[0])
+        raise StandardError.new('version is not valid') unless Gem::Version.correct?(args[0])
         parser.translations[args[0]] = VersionParser.parse(&block)
       end
 
