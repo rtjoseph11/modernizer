@@ -3,7 +3,7 @@ module Modernize
     # executes a block to figure out the sets of translations and version
     #
     def self.parse(&block)
-      context = BlockParsingContenxt.new
+      context = BlockParsingContext.new
       context.instance_exec(&block)
       context.migrations
     end
@@ -17,7 +17,7 @@ module Modernize
 
   # class for the context in which the block will get run
   #
-  class BlockParsingContenxt
+  class BlockParsingContext
     attr_accessor :translations, :initial_version, :has_version, :order
 
     def initialize
