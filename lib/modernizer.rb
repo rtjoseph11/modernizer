@@ -7,15 +7,15 @@ require 'modernizer/parser'
 module Modernize
   class Modernizer
 
-    # generates the set of migrations by parsing the passed in block
+    # Generates the set of migrations by parsing the passed in block
     #
     def initialize(&block)
       @migrations = Parser.parse(&block)
     end
 
-    # translates a hash based on defined migrations
-    # with a given context and returns the hash
-    # this will modify whatever gets passed in
+    # Translates a hash based on defined migrations
+    # with a given context and returns the hash.
+    # This will modify whatever gets passed in.
     #
     def translate(context, hash)
       # makes sure that the context is a hash
@@ -81,8 +81,8 @@ module Modernize
 
   private
 
-  # this class is used to make the context key/values available
-  # as instance variables to the map methods
+  # This class is used to make the context key/values available
+  # as instance variables to the map methods.
   #
   class StructContext
     def initialize(context, hash)
@@ -92,14 +92,14 @@ module Modernize
       end
     end
 
-    # helper method which wraps define_method
+    # Helper method which wraps define_method.
     #
     def create_method(name, &block)
       self.class.send(:define_method, name, &block)
     end
 
-    # creates getters for each instance variable and sets
-    # the initial value
+    # Creates getters for each instance variable and sets
+    # the initial value.
     #
     def create_getter(name, value)
       instance_variable_set(:"@#{name}", value)

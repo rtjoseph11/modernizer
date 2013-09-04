@@ -1,6 +1,6 @@
 module Modernize
   class Parser
-    # executes a block to figure out the sets of translations and version
+    # Executes a block to figure out the sets of translations and version.
     #
     def self.parse(&block)
       context = BlockParsingContext.new
@@ -9,13 +9,13 @@ module Modernize
     end
   end
 
-  # struct for storing the translations and block for determining version
+  # Struct for storing the translations and block for determining version
   #
   class CompiledMigrations < Struct.new(:translations, :version, :order); end
 
   class VersionError < StandardError; end
 
-  # class for the context in which the block will get run
+  # Class for the context in which the block will get run
   #
   class BlockParsingContext
     attr_accessor :translations, :initial_version, :has_version, :order
@@ -27,15 +27,15 @@ module Modernize
       @order = :ascending
     end
 
-    # determines what versions there are and before + after if any
+    # Determines what versions there are and before + after if any.
     #
     def method_missing(method, *args, &block)
       raise NoMethodError.new("Undefined translation method #{method}") unless MetaMethods.respond_to?(method)
       MetaMethods.send(method, self, args, &block)
     end
 
-    # returns the struct of version block and translation sets
-    # throws an error if no block is provided for determining version
+    # Returns the struct of version block and translation sets
+    # throws an error if no block is provided for determining version.
     #
     def migrations
       raise VersionError.new('did not provide a way to determine version') unless @has_version
