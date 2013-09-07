@@ -38,14 +38,20 @@ module Modernize
 
       raise StandardError.new('calculated version is not valid') unless Gem::Version.correct?(struct_version)
 
+      # gets a list of the potential versions 
+      #
+      migration_versions = @migrations.translations.keys
+      migration_versions.delete(:first)
+      migration_versions.delete(:last)
+
       # get the first and last translations
       #
-      firsts = @migrations.translations.delete(:first)
-      lasts = @migrations.translations.delete(:last)
+      firsts = @migrations.translations[:first]
+      lasts = @migrations.translations[:last]
 
-      # gets a list of the potential versions and then sorts them
+      # sorts the versions
       #
-      migration_versions = @migrations.translations.keys.sort! do |x,y|
+      migration_versions.sort! do |x,y|
         Gem::Version.new(x) <=> Gem::Version.new(y)
       end
 
