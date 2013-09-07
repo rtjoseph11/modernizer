@@ -26,7 +26,7 @@ Modernizer.new do
   end
  
   modernize '1.2.1' do
-    add('foo') { "#{@body['hello']}-bar" }
+    add('foo') { "#{@hash['hello']}-bar" }
   end
  
   modernize '1.2.3' do
