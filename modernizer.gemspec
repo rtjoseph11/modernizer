@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['rtjoseph11@gmail.com']
   spec.description   = %q{convert hashes based on translations associated with versions}
   spec.summary       = %q{see description}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/rtjoseph11/modernizer'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
